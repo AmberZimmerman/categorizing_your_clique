@@ -1,5 +1,17 @@
-const express = require('express');
+const mysql = require('mysql2');
+const inquirer = require('inquirer');
+const cTable = require('console.table');
 
+// connect to database
+const db = mysql.createConnection(
+    {
+        host: 'localhost',
+        user: 'root',
+        password: 'Inspiration21!',
+        database: 'company_db',
+    },
+    console.log('Connected to the company_db database.')
+)
 
 // First question that asks what user wants to do
 const start = () => [
@@ -49,7 +61,7 @@ function resolveChoice(x) {
         // Prompt ask question "Waht is the name of the department" - user types answer that adds to department table
         
     }
-}
+};
 
 
 
