@@ -18,6 +18,7 @@ CREATE TABLE role (
     ON DELETE SET NULL
 );
 
+-- need to add in manager id
 CREATE TABLE employee (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30),
