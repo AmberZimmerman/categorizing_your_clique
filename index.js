@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 // const cTable = require('console.table');
 
 // connect to database
-let db = mysql.createConnection(
+const db = mysql.createConnection(
     {
         host: 'localhost',
         user: 'root',
@@ -63,7 +63,7 @@ let db = mysql.createConnection(
                     name: "manager",
                 },
             ];
-            return inquirer.prompt(...addEmployee);
+            return inquirer.prompt(addEmployee);
     
             case 'Update Employee Role':
             // Prompt, first question asks for which employee !!list!!, next question "which role do you want to assign" - !!list of roles!!
@@ -71,17 +71,61 @@ let db = mysql.createConnection(
                 break;
     
             case 'View all roles':
-            // Show sql table of all roles
+                const allRole = `SELECT id, role_title AS title FROM role`;
+
+                db.query(allRole, (err, rows) => {
+                  if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                  }
+                  res.json({
+                    message: 'view all roles',
+                    data: rows,
+                  });
+                });
+            
             console.log("viewing all roles")
                 break;
     
             case 'Add Role':
             // Prompt 3 questions, 1st question "What is the name of the role" - user typed in answer, "What is the salary - user entered salary", "Which department does the role blong to" - !!!list of departments!!
+            const addEmployee = [
+                {
+                    type: "input",
+                    message: `What is the name of the role?`,
+                    name: "newRole",
+                },
+                {
+                    type: "input",
+                    message: `What is the role salary?`,
+                    name: "roleSalary",
+                },
+                {
+                    type: "list",
+                    message: `What department does the role belong to?`,
+                    choices: ["Sales",
+                    "Engineering", "Finance", "Legal"],
+                    name: "newRoleDepartment",
+                }
+            ];
             console.log("adding a role")
                 break;
     
             case 'View all Departments':
             // Show sql table of all departments
+            const depTable = `SELECT * FROM department`;
+            
+            db.query(depTable, (err, rows) => {
+                if (err) {
+                  res.status(500).json({ error: err.message });
+                  return;
+                }
+                res.json({
+                  message: 'showing all departments',
+                  data: rows,
+                });
+              });
+
             console.log("view all departments")
                 break;
     
@@ -93,6 +137,8 @@ let db = mysql.createConnection(
             }
     
         };
+
+      
     
     
     
