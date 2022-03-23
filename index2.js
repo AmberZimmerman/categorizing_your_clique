@@ -45,8 +45,8 @@ async function addDepartment() {
 
 // WHEN I choose to add a role
 // THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-async function addRole() {
-    const addNewRole = await commandMenu([
+async function addRole(departments) {
+     const addNewRole = await commandMenu([
         {
           type: "input",
           message: `What is the name of the role?`,
@@ -66,6 +66,66 @@ async function addRole() {
       ]);
     console.log(addNewRole);
 }
+
+// WHEN I choose to add an employee
+// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
+async function addEmployee(allEmployees) {
+    const addNewEmployee = await commandMenu([
+        {
+            type: "input",
+            message: `What is the team member's first name?`,
+            name: "firstName",
+          },
+          {
+            type: "input",
+            message: `What is the team member's last name?`,
+            name: "lastName",
+          },
+          {
+            type: "list",
+            message: `What is the employee role?`,
+            choices: [
+              "Sales Lead",
+              "Salesperson",
+              "Lead Engineer",
+              "Software Engineer",
+              "Account Manager",
+              "Accountant",
+              "Legal Team Lead",
+              "Lawyer",
+            ],
+            name: "employeeRole",
+          },
+          {
+            type: "list",
+            message: `What is the team member's manager?`,
+            choices: allEmployees,
+            name: "manager",
+          }
+    ]);
+    console.log(addNewEmployee);
+}
+
+// WHEN I choose to update an employee role
+// THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+async function updateRole(allEmployees, allRoles) {
+    const updateEmployeeRole = await commandMenu([
+        {
+          type: "list",
+          message: `Who is the employee?`,
+          choices: allEmployees,
+          name: "employeeUpdate",
+        },
+        {
+          type: "list",
+          message: `Which role do you want to assign?`,
+          choices: allRoles,
+          name: "roleUpdate",
+        },
+      ]);
+    console.log(updateEmployeeRole);
+}
+
 
 
 // HEN I start the application
@@ -93,4 +153,4 @@ async function start() {
   console.log(startResponse);
 }
 
-viewAllDepartments();
+updateRole(["billybob", "john"], ["accountant", "busybee"]);
