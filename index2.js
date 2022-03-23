@@ -14,18 +14,7 @@ const db = mysql.createConnection(
 // Database Functions
 function saveToDB() {
     // Use Database Logic Here
-    const viewEmploy = `SELECT * FROM employee`;
-
-      db.query(viewEmploy, (err, rows) => {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        res.json({
-          message: "showing all employees",
-          data: rows,
-        });
-      });
+    
 }
 
 // I WANT to be able to view and manage the departments, roles, and employees in my company
@@ -55,7 +44,10 @@ function viewAllRoles() {
 // WHEN I choose to view all employees
 // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 function viewAllEmployees() {
-    printTable('view all employees')
+    db.query('SELECT * FROM employee', function (err, results) {
+        console.log(results);
+      });
+    printTable(["apples", "oranges", "bananas"]);
 }
 
 // WHEN I choose to add a department
@@ -188,4 +180,4 @@ async function start() {
   console.log(startResponse);
 }
 
-saveToDB();
+viewAllEmployees();
