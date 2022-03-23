@@ -1,4 +1,32 @@
 const inquirer = require("inquirer");
+const mysql = require("mysql2");
+
+const db = mysql.createConnection(
+    {
+      host: "localhost",
+      user: "root",
+      password: "Inspiration21!",
+      database: "company_db",
+    },
+    console.log("Connected to the company_db database.")
+  );
+
+// Database Functions
+function saveToDB() {
+    // Use Database Logic Here
+    const viewEmploy = `SELECT * FROM employee`;
+
+      db.query(viewEmploy, (err, rows) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+          return;
+        }
+        res.json({
+          message: "showing all employees",
+          data: rows,
+        });
+      });
+}
 
 // I WANT to be able to view and manage the departments, roles, and employees in my company
 function printTable(data) {
@@ -33,14 +61,21 @@ function viewAllEmployees() {
 // WHEN I choose to add a department
 // THEN I am prompted to enter the name of the department and that department is added to the database
 async function addDepartment() {
-    const addNewDepartment = await commandMenu([
+    // Get Deparment Name from User
+    // { departmentName: 'Engineering' }
+    const userResponse = await commandMenu([
         {
           type: "input",
           message: `What is the name of the department?`,
-          name: "newDepartment",
+          name: "departmentName",
         },
       ]);
-    console.log(addNewDepartment);
+      console.log(`Department Name: ${userResponse.departmentName}`)
+    // Save the name into our MySQL Database
+    saveToDB();
+    
+    // Next is to get all data for table and print to screen
+
 }
 
 // WHEN I choose to add a role
@@ -153,4 +188,4 @@ async function start() {
   console.log(startResponse);
 }
 
-updateRole(["billybob", "john"], ["accountant", "busybee"]);
+saveToDB();
