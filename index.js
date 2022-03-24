@@ -62,7 +62,7 @@ function getAllRoles() {
       for (let i = 0; i < roles.length; i++) {
         const singleRole = roles[i];
         console.log("THIS IS SINGLE ROLE AFTER LOOP:", singleRole)
-        allRoles.push(`${singleRole}`)
+        allRoles.push(`${singleRole.role_title}`)
       }
       console.log("THIS IS all roles after push:", allRoles);
       resolve(allRoles);
@@ -244,7 +244,8 @@ async function updateRole() {
   let allEmployees = await getAllEmployees();
   let allRolesList = await getAllRoles();
 
-  console.log("THIS IS ROLE DATA:", allEmployees);
+  console.log("THIS IS allEmployees:", allEmployees);
+  console.log("THIS IS allRolesList:", allRolesList);
   const updateEmployeeRole = await commandMenu([
     {
       type: "list",
@@ -258,8 +259,9 @@ async function updateRole() {
       choices: allRolesList,
       name: "roleUpdate",
     },
+  
   ]);
-  console.log(updateEmployeeRole);
+  console.log('Update Response:', updateEmployeeRole);
 }
 
 // HEN I start the application
@@ -294,7 +296,7 @@ async function start() {
       await addEmployee();
       break;
     case "Update Employee Role":
-      updateRole();
+      await updateRole();
       break;
     case "View all roles":
       await viewAllRoles();
