@@ -184,13 +184,13 @@ async function updateRole(allEmployees, allRoles) {
     const updateEmployeeRole = await commandMenu([
         {
           type: "list",
-          message: `Who is the employee?`,
+          message: `Which employee's role would you like to update?`,
           choices: allEmployees,
           name: "employeeUpdate",
         },
         {
           type: "list",
-          message: `Which role do you want to assign?`,
+          message: `Which role do you want to assign to the selected employee?`,
           choices: allRoles,
           name: "roleUpdate",
         },
@@ -263,3 +263,9 @@ async function start() {
 start();
 
 // Still need to connect new role with all the departments and display all the department options in add role
+
+// Make sure updated values show in view all employees table if someone updates a role and selects view all employees after
+
+// Need to add role_title, dept_name, salary, and manager to view employee table
+
+
