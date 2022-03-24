@@ -11,10 +11,6 @@ const db = mysql.createConnection(
     console.log("Connected to the company_db database.")
   );
 
-// Database Functions
-function saveToDB() {
-    // Use Database Logic Here
-}
 
 // I WANT to be able to view and manage the departments, roles, and employees in my company
 function printTable(data) {
@@ -30,10 +26,12 @@ function commandMenu(questions) {
 // THEN I am presented with a formatted table showing department names and department ids
 // Uses the print table function I created on line 4
 function viewAllDepartments() {
+  return new Promise(function (resolve, reject) {
   db.query('SELECT * FROM department', function (err, results) {
     console.log(results);
     printTable(results);
   });
+  })
 }
 
 // WHEN I choose to view all roles
@@ -54,6 +52,10 @@ function viewAllRoles() {
 function viewAllEmployees() {
     return new Promise(function (resolve, reject) {
       db.query('SELECT * FROM employee', function (err, results) {
+        if (err) {
+          console.log('Err:', err);
+        }
+        
         console.log('Results expected to be array of objects');
         console.log('All Employees Results:' , results);
         printTable(results);
@@ -74,10 +76,20 @@ async function addDepartment() {
           name: "departmentName",
         },
       ]);
-      console.log(`Department Name: ${userResponse.departmentName}`)
+
+    console.log(`Department Name: ${userResponse.departmentName}`)
+
     // Save the name into our MySQL Database
-    saveToDB();
-    
+    return new Promise(function (resolve, reject) {
+    db.query(`INSERT INTO department (dept_name) VALUES ("${userResponse.departmentName}")`, function(err, results) {
+      if (err) {
+        console.log('Err:', err);
+      }
+      resolve()
+
+      console.log('Add Department Results:', results);
+    })
+    })
     // Next is to get all data for table and print to screen
 
 }
@@ -208,10 +220,10 @@ async function start() {
       addRole();
       break;
     case "View all Departments":
-      viewAllDepartments();
+      await viewAllDepartments();
       break;
     case "Add department":
-      addDepartment();
+      await addDepartment();
       break;
   }
 
