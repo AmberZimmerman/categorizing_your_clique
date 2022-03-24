@@ -56,16 +56,16 @@ function getAllEmployees() {
 function getAllRoles() {
   return new Promise(function (resolve, reject) {
     db.query("SELECT role_title FROM role",
-    function (err, names) {
-      console.log("THIS IS GET ALL NAMES:", names)
-      const allEmployeeNames = [];
-      for (let i = 0; i < names.length; i++) {
-        const singleName = names[i];
-        console.log("THIS IS SINGLE NAME AFTER LOOP:", singleName)
-        allEmployeeNames.push(`${singleName.first_name} ${singleName.last_name}`)
+    function (err, roles) {
+      console.log("THIS IS GET ALL ROLES:", roles)
+      const allRoles = [];
+      for (let i = 0; i < roles.length; i++) {
+        const singleRole = roles[i];
+        console.log("THIS IS SINGLE ROLE AFTER LOOP:", singleRole)
+        allRoles.push(`${singleRole}`)
       }
-      console.log("THIS IS all employee names after push:", allEmployeeNames);
-      resolve(allEmployeeNames);
+      console.log("THIS IS all roles after push:", allRoles);
+      resolve(allRoles);
       })
     })
 }
@@ -242,6 +242,8 @@ async function addEmployee() {
 // THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 async function updateRole() {
   let allEmployees = await getAllEmployees();
+  let allRolesList = await getAllRoles();
+
   console.log("THIS IS ROLE DATA:", allEmployees);
   const updateEmployeeRole = await commandMenu([
     {
@@ -253,7 +255,7 @@ async function updateRole() {
     {
       type: "list",
       message: `Which role do you want to assign to the selected employee?`,
-      choices: [],
+      choices: allRolesList,
       name: "roleUpdate",
     },
   ]);
