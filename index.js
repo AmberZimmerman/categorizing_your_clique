@@ -30,10 +30,29 @@ function getAllDepartments() {
         const singleDept = allDept[i];
         allDeptNames.push(singleDept.dept_name);
       }
-      console.log("THIS IS ALLDEPTNAMES AFTER FOR LOOP: ", allDeptNames)
+      console.log("THIS IS ALLDEPTNAMES AFTER FOR LOOP: ", allDeptNames);
+      resolve(allDeptNames);
     });
   });
 }
+
+function getAllEmployees() {
+  return new Promise(function (resolve, reject) {
+    db.query("SELECT first_name, last_name FROM employee",
+    function (err, names) {
+      console.log("THIS IS GET ALL NAMES:", names)
+      const allEmployeeNames = [];
+      for (let i = 0; i < names.length; i++) {
+        const singleName = names[i];
+        console.log("THIS IS SINGLE NAME AFTER LOOP:", singleName)
+        allEmployeeNames.push(`${singleName.first_name} ${singleName.last_name}`)
+      }
+      console.log("THIS IS all employee names after push:", allEmployeeNames);
+      resolve(allEmployeeNames);
+      })
+    })
+}
+
 
 // WHEN I choose to view all departments
 // THEN I am presented with a formatted table showing department names and department ids
@@ -106,7 +125,6 @@ async function addDepartment() {
       }
     );
   });
-  // Next is to get all data for table and print to screen
 }
 
 // WHEN I choose to add a role
@@ -114,8 +132,8 @@ async function addDepartment() {
 async function addRole() {
   // Call function to get all Roles in table
   // Update commandMenu array with choices
-  let roleData = await getAllDepartments();
-  console.log("THIS IS ROLE DATA:", roleData);
+  let deptData = await getAllDepartments();
+  console.log("THIS IS ROLE DATA:", deptData);
   const addNewRole = await commandMenu([
     {
       type: "input",
@@ -130,7 +148,7 @@ async function addRole() {
     {
       type: "list",
       message: `What department does the role belong to?`,
-      choices: [roleData],
+      choices: deptData,
       name: "newRoleDepartment",
     },
   ]);
@@ -152,7 +170,7 @@ async function addRole() {
 
 // WHEN I choose to add an employee
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-async function addEmployee(allEmployees) {
+async function addEmployee() {
   const addNewEmployee = await commandMenu([
     {
       type: "input",
@@ -205,7 +223,9 @@ async function addEmployee(allEmployees) {
 
 // WHEN I choose to update an employee role
 // THEN I am prompted to select an employee to update and their new role and this information is updated in the database
-async function updateRole(allEmployees, allRoles) {
+async function updateRole() {
+  let allEmployees = await getAllEmployees();
+  console.log("THIS IS ROLE DATA:", allEmployees);
   const updateEmployeeRole = await commandMenu([
     {
       type: "list",
