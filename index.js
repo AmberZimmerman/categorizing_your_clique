@@ -40,20 +40,26 @@ function viewAllDepartments() {
 // THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
 // Uses the print table function I created on line 4
 function viewAllRoles() {
+  return new Promise(function (resolve, reject) {
   db.query('SELECT * FROM role', function (err, results) {
     console.log(results);
     printTable(results);
+    resolve()
   });
+})
 }
 
 // WHEN I choose to view all employees
 // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 function viewAllEmployees() {
-    db.query('SELECT * FROM employee', function (err, results) {
-        console.log(results);
+    return new Promise(function (resolve, reject) {
+      db.query('SELECT * FROM employee', function (err, results) {
+        console.log('Results expected to be array of objects');
+        console.log('All Employees Results:' , results);
         printTable(results);
+        resolve()
       });
-   
+    })
 }
 
 // WHEN I choose to add a department
@@ -181,10 +187,13 @@ async function start() {
     },
   ]);
 
+  console.log('User Input:', startResponse.activity)
+
   // Based off user input, do something
+  
   switch (startResponse.activity) {
     case "View all employees":
-      viewAllEmployees();
+      await viewAllEmployees();
       break;
     case "Add employee":
       addEmployee();
@@ -193,7 +202,7 @@ async function start() {
       updateRole();
       break;
     case "View all roles":
-      viewAllRoles();
+      await viewAllRoles();
       break;
     case "Add Role":
       addRole();
@@ -204,13 +213,18 @@ async function start() {
     case "Add department":
       addDepartment();
       break;
-    case "Finished":
-      break;
-
   }
 
 
-  console.log(startResponse);
+  // If user input DO equal finished, I DON'T want to START()
+  // If user input does NOT equal finished, I DO want to START()
+  if (startResponse.activity === 'Finished') {
+    console.log('All Done!')
+    return;
+  } else {
+    start()
+    console.log('begin again')
+  }
 }
 
 start();
