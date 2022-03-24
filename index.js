@@ -53,6 +53,23 @@ function getAllEmployees() {
     })
 }
 
+function getAllRoles() {
+  return new Promise(function (resolve, reject) {
+    db.query("SELECT role_title FROM role",
+    function (err, names) {
+      console.log("THIS IS GET ALL NAMES:", names)
+      const allEmployeeNames = [];
+      for (let i = 0; i < names.length; i++) {
+        const singleName = names[i];
+        console.log("THIS IS SINGLE NAME AFTER LOOP:", singleName)
+        allEmployeeNames.push(`${singleName.first_name} ${singleName.last_name}`)
+      }
+      console.log("THIS IS all employee names after push:", allEmployeeNames);
+      resolve(allEmployeeNames);
+      })
+    })
+}
+
 
 // WHEN I choose to view all departments
 // THEN I am presented with a formatted table showing department names and department ids
@@ -236,7 +253,7 @@ async function updateRole() {
     {
       type: "list",
       message: `Which role do you want to assign to the selected employee?`,
-      choices: allRoles,
+      choices: [],
       name: "roleUpdate",
     },
   ]);
