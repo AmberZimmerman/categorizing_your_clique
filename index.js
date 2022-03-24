@@ -155,6 +155,17 @@ async function addEmployee(allEmployees) {
           // }
     ]);
     console.log(addNewEmployee);
+
+    return new Promise(function (resolve, reject) {
+      db.query(`INSERT INTO employee (first_name, last_name) VALUES ("${addNewEmployee.firstName}", "${addNewEmployee.lastName}")`, function(err, results) {
+        if (err) {
+          console.log('Err:', err);
+        }
+        resolve()
+  
+        console.log('Add Employee Results:', results);
+      })
+      })
 }
 
 // WHEN I choose to update an employee role
@@ -208,7 +219,7 @@ async function start() {
       await viewAllEmployees();
       break;
     case "Add employee":
-      addEmployee();
+      await addEmployee();
       break;
     case "Update Employee Role":
       updateRole();
