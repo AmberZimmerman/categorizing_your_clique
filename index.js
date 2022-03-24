@@ -1,66 +1,105 @@
-const mysql = require("mysql2");
 const inquirer = require("inquirer");
-// const cTable = require('console.table');
+const mysql = require("mysql2");
 
-// connect to database
 const db = mysql.createConnection(
-  {
-    host: "localhost",
-    user: "root",
-    password: "Inspiration21!",
-    database: "company_db",
-  },
-  console.log("Connected to the company_db database.")
-);
-
-// First question that asks what user wants to do
-
-let start = () => {
-  const mainMenu = [
     {
-      type: "list",
-      message: "What would you like to do?",
-      choices: [
-        "View all employees",
-        "Add employee",
-        "Update Employee Role",
-        "View all roles",
-        "Add Role",
-        "View all Departments",
-        "Add department",
-        "Finished",
-      ],
-      name: "activity",
+      host: "localhost",
+      user: "root",
+      password: "Inspiration21!",
+      database: "company_db",
     },
-  ];
-  return inquirer.prompt(mainMenu);
-};
+    console.log("Connected to the company_db database.")
+  );
 
-// Second function that will take answer from main menu
-let userChoice = (activity) => {
-  switch (activity) {
-    case "View all employees":
-      // Show sql table of all employees
-      const viewEmploy = `SELECT * FROM employee`;
+// Database Functions
+function saveToDB() {
+    // Use Database Logic Here
+    
+}
 
-      db.query(viewEmploy, (err, rows) => {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        res.json({
-          message: "showing all employees",
-          data: rows,
-        });
+// I WANT to be able to view and manage the departments, roles, and employees in my company
+function printTable(data) {
+  console.table(data);
+}
+// GIVEN a command-line application that accepts user input
+// Return a promise everytime.
+function commandMenu(questions) {
+  return inquirer.prompt(questions);
+}
+
+// WHEN I choose to view all departments
+// THEN I am presented with a formatted table showing department names and department ids
+// Uses the print table function I created on line 4
+function viewAllDepartments() {
+    printTable('viewAllDepartments')
+}
+
+// WHEN I choose to view all roles
+// THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
+// Uses the print table function I created on line 4
+function viewAllRoles() {
+    printTable('view all roles')
+}
+
+// WHEN I choose to view all employees
+// THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+function viewAllEmployees() {
+    db.query('SELECT * FROM employee', function (err, results) {
+        console.log(results);
+        printTable(results);
       });
-      console.log("view all employees");
-      break;
+   
+}
 
-    case "Add employee":
-      // Prompt asking four questions "first name", "last name", "what is employee role- !!list!!, who is the employees manager- !!list!!"
-      const addEmployee = () =>
-        inquirer.prompt([
-          {
+// WHEN I choose to add a department
+// THEN I am prompted to enter the name of the department and that department is added to the database
+async function addDepartment() {
+    // Get Deparment Name from User
+    // { departmentName: 'Engineering' }
+    const userResponse = await commandMenu([
+        {
+          type: "input",
+          message: `What is the name of the department?`,
+          name: "departmentName",
+        },
+      ]);
+      console.log(`Department Name: ${userResponse.departmentName}`)
+    // Save the name into our MySQL Database
+    saveToDB();
+    
+    // Next is to get all data for table and print to screen
+
+}
+
+// WHEN I choose to add a role
+// THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
+async function addRole(departments) {
+     const addNewRole = await commandMenu([
+        {
+          type: "input",
+          message: `What is the name of the role?`,
+          name: "newRole",
+        },
+        {
+          type: "input",
+          message: `What is the role salary?`,
+          name: "roleSalary",
+        },
+        {
+          type: "list",
+          message: `What department does the role belong to?`,
+          choices: ["Sales", "Engineering", "Finance", "Legal"],
+          name: "newRoleDepartment",
+        },
+      ]);
+    console.log(addNewRole);
+}
+
+// WHEN I choose to add an employee
+// THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
+async function addEmployee(allEmployees) {
+    const addNewEmployee = await commandMenu([
+        {
             type: "input",
             message: `What is the team member's first name?`,
             name: "firstName",
@@ -86,129 +125,60 @@ let userChoice = (activity) => {
             name: "employeeRole",
           },
           {
-            type: "input",
+            type: "list",
             message: `What is the team member's manager?`,
+            choices: allEmployees,
             name: "manager",
-          },
-        ]);
-       addEmployee().then(async (data) => {
-        const addEmploy = `INSERT INTO employee(first_name, last_name, role_id, manager) VALUES (firstName, lastName, employeeRole, manager)`;
-
-        db.query(addEmploy, (err, rows) => {
-          if (err) {
-            res.status(500).json({ error: err.message });
-            return;
           }
-          res.json({
-            message: "added an employee",
-            data: rows,
-          });
-        });
-      });
-      break;
-    case "Update Employee Role":
-      // Prompt, first question asks for which employee !!list!!, next question "which role do you want to assign" - !!list of roles!!
-      const updateRole = [
+    ]);
+    console.log(addNewEmployee);
+}
+
+// WHEN I choose to update an employee role
+// THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+async function updateRole(allEmployees, allRoles) {
+    const updateEmployeeRole = await commandMenu([
         {
           type: "list",
           message: `Who is the employee?`,
-          // choices: display current employees
+          choices: allEmployees,
           name: "employeeUpdate",
         },
         {
           type: "list",
           message: `Which role do you want to assign?`,
+          choices: allRoles,
           name: "roleUpdate",
         },
-      ];
+      ]);
+    console.log(updateEmployeeRole);
+}
 
-      console.log("updating the employee role");
-      break;
 
-    case "View all roles":
-      const viewRole = `SELECT id, role_title AS title FROM role`;
 
-      db.query(viewRole, (err, rows) => {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        res.json({
-          message: "view all roles",
-          data: rows,
-        });
-      });
+// HEN I start the application
+async function start() {
+  const startResponse = await commandMenu([
+    {
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        "View all employees",
+        "Add employee",
+        "Update Employee Role",
+        "View all roles",
+        "Add Role",
+        "View all Departments",
+        "Add department",
+        "Finished",
+      ],
+      name: "activity",
+    },
+  ]);
 
-      console.log("viewing all roles");
-      break;
+  // Based off user input, do something
 
-    case "Add Role":
-      // Prompt 3 questions, 1st question "What is the name of the role" - user typed in answer, "What is the salary - user entered salary", "Which department does the role blong to" - !!!list of departments!!
-      const addRole = [
-        {
-          type: "input",
-          message: `What is the name of the role?`,
-          name: "newRole",
-        },
-        {
-          type: "input",
-          message: `What is the role salary?`,
-          name: "roleSalary",
-        },
-        {
-          type: "list",
-          message: `What department does the role belong to?`,
-          choices: ["Sales", "Engineering", "Finance", "Legal"],
-          name: "newRoleDepartment",
-        },
-      ];
-      console.log("adding a role");
-      break;
+  console.log(startResponse);
+}
 
-    case "View all Departments":
-      // Show sql table of all departments
-      const viewDepart = `SELECT * FROM department`;
-
-      db.query(viewDepart, (err, rows) => {
-        if (err) {
-          res.status(500).json({ error: err.message });
-          return;
-        }
-        res.json({
-          message: "showing all departments",
-          data: rows,
-        });
-      });
-
-      console.log("view all departments");
-      break;
-
-    case "Add department":
-      // Prompt ask question "Wht is the name of the department" - user types answer that adds to department table
-      const addDepartment = [
-        {
-          type: "input",
-          message: `What is the name of the department?`,
-          name: "newDepartment",
-        },
-      ];
-      console.log("Add a department");
-      break;
-  }
-};
-
-start().then(async (mainMenuSelection) => {
-  if (mainMenuSelection === "Finished") {
-    return;
-  }
-
-  let nextSelectionPrompts = userChoice(mainMenuSelection.activity);
-
-  while (mainMenuSelection.activity != "Finished") {
-    let nextSelection = await userChoice(nextSelectionPrompts);
-
-    // nextSelectionPrompts = userChoice(nextSelection.activity);
-  }
-  let askAgain = await start();
-  console.log("we are going to start again");
-});
+viewAllEmployees();
