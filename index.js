@@ -116,6 +116,16 @@ async function addRole(departments) {
         },
       ]);
     console.log(addNewRole);
+    return new Promise(function (resolve, reject) {
+      db.query(`INSERT INTO role (role_title, salary) VALUES ("${addNewRole.newRole}", "${addNewRole.roleSalary}")`, function(err, results) {
+        if (err) {
+          console.log('Err:', err);
+        }
+        resolve()
+  
+        console.log('Add Department Results:', results);
+      })
+    })
 }
 
 // WHEN I choose to add an employee
@@ -228,7 +238,7 @@ async function start() {
       await viewAllRoles();
       break;
     case "Add Role":
-      addRole();
+      await addRole();
       break;
     case "View all Departments":
       await viewAllDepartments();
@@ -251,3 +261,5 @@ async function start() {
 }
 
 start();
+
+// Still need to connect new role with all the departments and display all the department options in add role
