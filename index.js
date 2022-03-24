@@ -14,7 +14,6 @@ const db = mysql.createConnection(
 // Database Functions
 function saveToDB() {
     // Use Database Logic Here
-    
 }
 
 // I WANT to be able to view and manage the departments, roles, and employees in my company
@@ -31,14 +30,20 @@ function commandMenu(questions) {
 // THEN I am presented with a formatted table showing department names and department ids
 // Uses the print table function I created on line 4
 function viewAllDepartments() {
-    printTable('viewAllDepartments')
+  db.query('SELECT * FROM department', function (err, results) {
+    console.log(results);
+    printTable(results);
+  });
 }
 
 // WHEN I choose to view all roles
 // THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
 // Uses the print table function I created on line 4
 function viewAllRoles() {
-    printTable('view all roles')
+  db.query('SELECT * FROM role', function (err, results) {
+    console.log(results);
+    printTable(results);
+  });
 }
 
 // WHEN I choose to view all employees
@@ -124,12 +129,12 @@ async function addEmployee(allEmployees) {
             ],
             name: "employeeRole",
           },
-          {
-            type: "list",
-            message: `What is the team member's manager?`,
-            choices: allEmployees,
-            name: "manager",
-          }
+          // {
+          //   type: "list",
+          //   message: `What is the team member's manager?`,
+          //   choices: allEmployees,
+          //   name: "manager",
+          // }
     ]);
     console.log(addNewEmployee);
 }
@@ -177,8 +182,35 @@ async function start() {
   ]);
 
   // Based off user input, do something
+  switch (startResponse.activity) {
+    case "View all employees":
+      viewAllEmployees();
+      break;
+    case "Add employee":
+      addEmployee();
+      break;
+    case "Update Employee Role":
+      updateRole();
+      break;
+    case "View all roles":
+      viewAllRoles();
+      break;
+    case "Add Role":
+      addRole();
+      break;
+    case "View all Departments":
+      viewAllDepartments();
+      break;
+    case "Add department":
+      addDepartment();
+      break;
+    case "Finished":
+      break;
+
+  }
+
 
   console.log(startResponse);
 }
 
-viewAllEmployees();
+start();
