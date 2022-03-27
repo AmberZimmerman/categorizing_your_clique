@@ -33,7 +33,7 @@ function commandMenu(questions) {
 
 function getAllDepartments() {
   return new Promise(function (resolve, reject) {
-    db.query("SELECT dept_name FROM department", function (err, allDept) {
+    db.query("SELECT * FROM department", function (err, allDept) {
 
           const allDeptNames = [];
           for (let i = 0; i < allDept.length; i++) {
@@ -92,8 +92,9 @@ function getAllRoles() {
 
 function viewAllDepartments() {
   return new Promise(function (resolve, reject) {
-    db.query("SELECT * FROM department", function (err, results) {
+    db.query("SELECT id, dept_name FROM department", function (err, results) {
       printTable(results);
+      resolve();
     });
   });
 }
@@ -106,7 +107,7 @@ function viewAllDepartments() {
 
 function viewAllRoles() {
   return new Promise(function (resolve, reject) {
-    db.query("SELECT * FROM role", function (err, results) {
+    db.query("SELECT * FROM role INNER JOIN department ON role.id = department.id", function (err, results) {
       printTable(results);
       resolve();
     });
@@ -117,10 +118,11 @@ function viewAllRoles() {
 
 // WHEN I choose to view all employees
 // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+// Still need department name and manager
 
 function viewAllEmployees() {
   return new Promise(function (resolve, reject) {
-    db.query("SELECT * FROM employee", function (err, results) {
+    db.query("SELECT * FROM employee INNER JOIN role ON employee.id = role.id INNER JOIN department ON role.department_id=department.id", function (err, results) {
       if (err) {
         console.log("Err:", err);
       }
@@ -208,6 +210,7 @@ async function addRole() {
 // THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
 
 async function addEmployee() {
+    let allEmployees = await getAllEmployees();
     const addNewEmployee = await commandMenu([
       {
         type: "input",
@@ -234,12 +237,12 @@ async function addEmployee() {
         ],
       name: "employeeRole",
     },
-    // {
-    //   type: "list",
-    //   message: `What is the team member's manager?`,
-    //   choices: allEmployees,
-    //   name: "manager",
-    // }
+    {
+      type: "list",
+      message: `What is the team member's manager?`,
+      choices: allEmployees,
+      name: "manager",
+    }
   ]);
   console.log(addNewEmployee);
 
@@ -340,9 +343,9 @@ async function start() {
 
   // If user input DO equal finished, I DON'T want to START()
   // If user input does NOT equal finished, I DO want to START()
-  
+
     if (startResponse.activity === "Finished") {
-      console.log("All Done!");
+      console.log("All Done! Press control C");
       return;
     } else {
       start();
@@ -354,6 +357,7 @@ start();
 
 // Still need to connect new role with all the departments and display all the department options in add role
 
-// Make sure updated values show in view all employees table if someone updates a role and selects view all employees after
 
 // Need to add role_title, dept_name, salary, and manager to view employee table
+
+// Need to add a manager column to the employee table

@@ -15,12 +15,12 @@ VALUES (1, "Sales Lead", 10000),
        (4, "Lawyer", 190000);
 
 -- need to add in manager id at some point
-INSERT INTO employee (role_id, first_name, last_name)
-VALUES (1, "John", "Doe"),
-        (2, "Mike", "Chan"),
-        (3, "Ashley", "Rodriguez"),
-        (4, "Kevin", "Tupik"),
-        (5, "Kunal", "Singh"),
-        (6, "Malia", "Brown"),
-        (7, "Sarah", "Lourd"),
-        (8, "Tom", "Allen");
+INSERT INTO employee (role_id, first_name, last_name, manager_id)
+VALUES (1, "John", "Doe", 2),
+        (2, "Mike", "Chan", 3),
+        (3, "Ashley", "Rodriguez", 5),
+        (4, "Kevin", "Tupik", 2),
+        (5, "Kunal", "Singh", 1),
+        (6, "Malia", "Brown", 7),
+        (7, "Sarah", "Lourd", 5),
+        (8, "Tom", "Allen", 5);
