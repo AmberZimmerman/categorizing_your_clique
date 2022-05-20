@@ -37,7 +37,7 @@ In order to install the necessary dependencies, open the console and run the fol
 
 ### Usage Instructions:
 
-Copy and paste the SSH key from the code, paste in terminal in the desired directory, type in the terminal "git clone origin main", and install all the dependencies mentioned above. Type node index.js to start.
+Copy and paste the SSH key from the code, paste in terminal in the desired directory, type in the terminal "git clone origin main", and install all the dependencies mentioned above. Make sure that MySQL server is started. Type node index.js to start.
 
 ### Questions:
 
