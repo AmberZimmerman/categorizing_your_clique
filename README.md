@@ -33,7 +33,7 @@ Finally, if a user selects "Update an employee" they will be able to change data
 ### Installation:
 
 In order to install the necessary dependencies, open the console and run the following:
-`npm init --y, npm i, npm i inquirer, npm i mysql2`
+`npm init --y, npm i`
 
 ### Usage Instructions:
 
@@ -45,4 +45,4 @@ If you have any questions contact me on [GitHub](https://github.com/AmberZimmerm
 
 ### Screenshot:
 
-![My Image](Project screenshot not available for this project)
+![My Image](./assets/categorizing-your-clique.gif)
